@@ -4,7 +4,6 @@
   const appid_openweather = "ac0fdd38df429674be21355a4850114b"; //openweathermap appid
   const appid_heremaps = "lmuiUmhDK2JQwBnORnRB"; //here maps appid
   const appcode_heremaps = "W3YBbdzlsKOER9SvMF_V1g"; //here maps app code
-  var ulhide = true; //render data only then from is submited varialble
   var loading = false; //get loading state varialble
   var city = ""; //store input value varialble1
   var temp = ""; //store temp varialble
@@ -12,7 +11,7 @@
   var disc = ""; //store weather discription varialble
   var mapurl = ""; //define varialble for map image url
   var zoomlevel = 14.5; //change zoom level ot the map image , parametert defined in here maps api
-  var incomeData = {}; //varialble for openweathermap data
+  var incomeData =null; //varialble for openweathermap data
 
   const submitHandler = () => {
     //submit handler function
@@ -25,7 +24,6 @@
       )
       .then(data => {
         //get data upone a sucsessfull response
-        ulhide = false; //show data div
         loading = false; //chage loading state to false
         console.log(data.data);
         incomeData = data.data; //assign response data to the variable
@@ -97,48 +95,53 @@
 <div class="maindiv">
 
   <h1>weather Geo web app</h1>
-
-  <div class="loader" hidden={!loading} />
+  {#if loading}
+    <div class="loader" />
+  {/if}
 
   <!-- add a html form to handle data -->
   <form class="forminput" on:submit|preventDefault={submitHandler}>
 
-    <input bind:value={city} placeholder="enter your city" />
+<!-- bind the value with the city variable we declared -->
+    <input bind:value={city} placeholder="Enter your city" />
 
     <button>Fetch Data</button>
 
   </form>
 
-  <div class="data" hidden={ulhide}>
+<!-- svelte supports conditions and logic in markup like pug , hbs view engines -->
+  {#if incomeData!==null}
+    <div class="data">
 
-    <div class="ulwrpper">
+      <div class="ulwrpper">
 
-      <table class="tabledata" style="width:40%">
+        <table class="tabledata" style="width:40%">
 
-        <tr>
-          <td>Tempurature :</td>
-          <td>
-            <span>{temp}&deg;</span>
-          </td>
+          <tr>
+            <td>Tempurature :</td>
+            <td>
+              <span>{temp}&deg;</span>
+            </td>
 
-        </tr>
-        <tr>
+          </tr>
+          <tr>
 
-          <td>Humidity :</td>
-          <td>
-            <span>{humidity}%</span>
-          </td>
-        </tr>
-        <tr>
+            <td>Humidity :</td>
+            <td>
+              <span>{humidity}%</span>
+            </td>
+          </tr>
+          <tr>
 
-          <td>weather like :</td>
-          <span>{disc}</span>
-        </tr>
-      </table>
+            <td>weather like :</td>
+            <span>{disc}</span>
+          </tr>
+        </table>
 
+      </div>
+
+      <img src={mapurl} alt="mapImageView" />
     </div>
-
-    <img src={mapurl} alt="mapImageView" />
-  </div>
+  {/if}
 
 </div>
